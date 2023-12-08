@@ -55,6 +55,7 @@
 
     <Spinner
         android:id="@+id/genreSp"
+        android:entries="@array/genreArray"
         android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -74,6 +75,7 @@
 
     <RatingBar
         android:id="@+id/rateRb"
+        android:visibility="gone"
         android:progressTint="@color/md_theme_light_primary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -85,6 +87,8 @@
         />
 
     <TextView
+        android:id="@+id/rateBarTv"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/_0_10"
