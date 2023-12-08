@@ -13,10 +13,10 @@ import br.edu.ifsp.scl.moviesmanager.databinding.TileMovieBinding
 import br.edu.ifsp.scl.moviesmanager.model.entity.Movie
 
 class MovieAdapter(
-    private var movieList: List<Movie>,
     private val onMovieClickListener: OnMovieClickListener
 ): RecyclerView.Adapter<MovieAdapter.MovieTileViewHolder>(), Filterable {
 
+    var movieList = ArrayList<Movie>()
     var movieListFilterable = ArrayList<Movie>()
     inner class MovieTileViewHolder(tileMovieBinding: TileMovieBinding) :
         RecyclerView.ViewHolder(tileMovieBinding.root) {
@@ -59,10 +59,10 @@ class MovieAdapter(
         LayoutInflater.from(parent.context), parent, false
     ).run { MovieTileViewHolder(this) }
 
-    override fun getItemCount(): Int = movieList.size
+    override fun getItemCount(): Int = movieListFilterable.size
 
     override fun onBindViewHolder(holder: MovieTileViewHolder, position: Int) {
-        movieList[position].let {movie ->
+        movieListFilterable[position].let {movie ->
             with(holder) {
                 nameTv.text = movie.name
                 yearTv.text = movie.year.toString()
@@ -76,15 +76,15 @@ class MovieAdapter(
         return object  : Filter() {
             override fun performFiltering(p: CharSequence?): FilterResults {
                 if (p.toString().isEmpty()) {
-                    movieListFilterable = movieList as ArrayList<Movie>
+                    movieListFilterable = movieList
                 }
                 else {
                     val resultList = ArrayList<Movie>()
                     for (row in movieList) {
                         if (
                             row.name.lowercase().contains(p.toString().lowercase()) ||
-                            row.rate.toString().contains(p.toString())
-                            ) {
+                            row.rate.toString() == p.toString()
+                        ) {
                             resultList.add(row)
                         }
                     }

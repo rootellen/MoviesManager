@@ -29,16 +29,13 @@ import br.edu.ifsp.scl.moviesmanager.view.adapter.MovieAdapter
 import br.edu.ifsp.scl.moviesmanager.view.adapter.OnMovieClickListener
 import br.edu.ifsp.scl.moviesmanager.viewModel.MoviesViewModel
 
-class MoviesFragment : Fragment(), OnMovieClickListener {
+class MainFragment : Fragment(), OnMovieClickListener {
     private lateinit var mfb: FragmentMoviesBinding
     private var ratingMoviePosition = 0
 
-    // Data source
-    private val movieList: MutableList<Movie> = mutableListOf()
-
     // Adapter
     private val movieAdapter: MovieAdapter by lazy {
-        MovieAdapter(movieList, this)
+        MovieAdapter(this)
     }
 
     // Navigation controller
@@ -64,15 +61,15 @@ class MoviesFragment : Fragment(), OnMovieClickListener {
                 val movie =
                     bundle.getParcelable(EXTRA_MOVIE, Movie::class.java)
                 movie?.also { receivedMovie ->
-                    movieList.indexOfFirst { it.name == receivedMovie.name }.also { position ->
+                    movieAdapter.movieListFilterable.indexOfFirst { it.name == receivedMovie.name }.also { position ->
                         if (position != -1) {
                             viewModel.editMovie(receivedMovie)
-                            movieList[position] = receivedMovie
+                            movieAdapter.movieListFilterable[position] = receivedMovie
                             movieAdapter.notifyItemChanged(position)
                         } else {
                             viewModel.insertMovie(receivedMovie)
-                            movieList.add(receivedMovie)
-                            movieAdapter.notifyItemInserted(movieList.lastIndex)
+                            movieAdapter.movieListFilterable.add(receivedMovie)
+                            movieAdapter.notifyItemInserted(movieAdapter.movieListFilterable.lastIndex)
                         }
                     }
                 }
@@ -84,14 +81,6 @@ class MoviesFragment : Fragment(), OnMovieClickListener {
                 )
             }
         }
-        viewModel.movieMld.observe(requireActivity()) { movies ->
-            movieList.clear()
-            movies.forEachIndexed { index, movie ->
-                movieList.add(movie)
-                movieAdapter.notifyItemChanged(index)
-            }
-        }
-        viewModel.getMovies()
     }
 
     override fun onCreateView(
@@ -105,10 +94,16 @@ class MoviesFragment : Fragment(), OnMovieClickListener {
 
             addMovieFab.setOnClickListener {
                 navController.navigate(
-                    MoviesFragmentDirections.actionMoviesFragmentToAddMovieFragment()
+                    MainFragmentDirections.actionMoviesFragmentToAddMovieFragment()
                 )
             }
         }
+        viewModel.movieMld.observe(requireActivity()) { movies ->
+            movies.let {
+                movieAdapter.updateList(movies)
+            }
+        }
+        viewModel.getMovies()
         return mfb.root
     }
 
@@ -127,7 +122,7 @@ class MoviesFragment : Fragment(), OnMovieClickListener {
                 searchIcon.setColorFilter(Color.WHITE)
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(p0: String?): Boolean {
-                        TODO("Not yet implemented")
+                        return false
                     }
 
                     override fun onQueryTextChange(p0: String?): Boolean {
@@ -147,8 +142,8 @@ class MoviesFragment : Fragment(), OnMovieClickListener {
     override fun onMovieClick(position: Int) = navigateToMovieFragment(position, false)
 
     override fun onRemoveMovieMenuItemClick(position: Int) {
-        viewModel.removeMovie(movieList[position])
-        movieList.removeAt(position)
+        viewModel.removeMovie(movieAdapter.movieListFilterable[position])
+        movieAdapter.movieListFilterable.removeAt(position)
         movieAdapter.notifyItemRemoved(position)
     }
 
@@ -160,17 +155,17 @@ class MoviesFragment : Fragment(), OnMovieClickListener {
             val dialog = MovieRateDialogFragment(this)
             activity?.supportFragmentManager?.let { dialog.show(it, dialog.tag) }
         } else {
-            movieList[position].run {
+            movieAdapter.movieListFilterable[position].run {
                 watched = false
                 rate = null
             }
-            viewModel.editMovie(movieList[position])
+            viewModel.editMovie(movieAdapter.movieListFilterable[position])
             movieAdapter.notifyItemChanged(position)
         }
     }
 
     override fun onCancelButtonDialogClicked() {
-        movieList[ratingMoviePosition].run {
+        movieAdapter.movieListFilterable[ratingMoviePosition].run {
             this.watched = false
             this.rate = null
             viewModel.editMovie(this)
@@ -179,7 +174,7 @@ class MoviesFragment : Fragment(), OnMovieClickListener {
     }
 
     override fun onRateButtonDialogClicked(rate: Int) {
-        movieList[ratingMoviePosition].run {
+        movieAdapter.movieListFilterable[ratingMoviePosition].run {
             this.watched = true
             this.rate = rate
             viewModel.editMovie(this)
@@ -188,9 +183,9 @@ class MoviesFragment : Fragment(), OnMovieClickListener {
     }
 
     private fun navigateToMovieFragment(position: Int, editMovie: Boolean) {
-        movieList[position].also {
+        movieAdapter.movieListFilterable[position].also {
             navController.navigate(
-                MoviesFragmentDirections.actionMoviesFragmentToAddMovieFragment(it, editMovie)
+                MainFragmentDirections.actionMoviesFragmentToAddMovieFragment(it, editMovie)
             )
         }
     }

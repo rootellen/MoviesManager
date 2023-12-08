@@ -1,6 +1,6 @@
 package br.edu.ifsp.scl.moviesmanager.view
 
-import android.opengl.Visibility
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,12 +16,12 @@ import androidx.navigation.fragment.navArgs
 import br.edu.ifsp.scl.moviesmanager.R
 import br.edu.ifsp.scl.moviesmanager.databinding.FragmentAddMovieBinding
 import br.edu.ifsp.scl.moviesmanager.model.entity.Movie
-import br.edu.ifsp.scl.moviesmanager.view.MoviesFragment.Companion.EXTRA_MOVIE
-import br.edu.ifsp.scl.moviesmanager.view.MoviesFragment.Companion.MOVIE_FRAGMENT_REQUEST_KEY
+import br.edu.ifsp.scl.moviesmanager.view.MainFragment.Companion.EXTRA_MOVIE
+import br.edu.ifsp.scl.moviesmanager.view.MainFragment.Companion.MOVIE_FRAGMENT_REQUEST_KEY
 
-class AddMovieFragment : Fragment() {
+class MovieFragment : Fragment() {
     private lateinit var famb: FragmentAddMovieBinding
-    private val navigationArgs: AddMovieFragmentArgs by navArgs()
+    private val navigationArgs: MovieFragmentArgs by navArgs()
     private var ratingValue = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +30,7 @@ class AddMovieFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -60,7 +61,7 @@ class AddMovieFragment : Fragment() {
                     durationEt.isEnabled = false
                     genreSp.isEnabled = false
                     watchedCb.isEnabled = false
-                    rateRb.isEnabled = false
+                    rateRb.setIsIndicator(true)
                     saveBt.isEnabled = false
                 }
             }

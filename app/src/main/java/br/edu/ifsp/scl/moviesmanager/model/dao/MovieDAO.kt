@@ -21,4 +21,5 @@ interface MovieDAO {
     fun updateMovie(movie: Movie)
     @Delete
     fun deleteMovie(movie: Movie)
+
 }
