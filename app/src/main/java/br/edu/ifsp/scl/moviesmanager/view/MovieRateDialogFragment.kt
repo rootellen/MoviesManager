@@ -25,11 +25,12 @@ class MovieRateDialogFragment(private val onMovieClickListener: OnMovieClickList
         }
 
         mrdfb.cancelBt.setOnClickListener {
+            onMovieClickListener.onCancelButtonDialogClicked()
             dismiss()
         }
 
         mrdfb.saveBt.setOnClickListener {
-            onMovieClickListener.onRateButtonClicked(ratingValue)
+            onMovieClickListener.onRateButtonDialogClicked(ratingValue)
             dismiss()
         }
 

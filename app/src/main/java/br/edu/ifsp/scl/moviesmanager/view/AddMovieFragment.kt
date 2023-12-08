@@ -8,6 +8,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
@@ -40,7 +41,28 @@ class AddMovieFragment : Fragment() {
         val receivedMovie = navigationArgs.movie
         receivedMovie?.also {
             with(famb) {
-//                nameEt.setText(task.name)
+                nameEt.setText(receivedMovie.name)
+                nameEt.isEnabled = false
+                yearEt.setText(receivedMovie.year.toString())
+                producerEt.setText(receivedMovie.producer)
+                durationEt.setText(receivedMovie.duration.toString())
+                genreSp.setSelection(getIndex(genreSp, receivedMovie.genre))
+                watchedCb.isChecked = receivedMovie.watched
+                rateRb.rating = receivedMovie.rate?.toFloat() ?: 0f
+                rateBarTv.text = "${(receivedMovie.rate)}/10"
+                if (receivedMovie.watched) {
+                    rateRb.visibility = VISIBLE
+                    rateBarTv.visibility = VISIBLE
+                }
+                if (!navigationArgs.editMovie) {
+                    yearEt.isEnabled = false
+                    producerEt.isEnabled = false
+                    durationEt.isEnabled = false
+                    genreSp.isEnabled = false
+                    watchedCb.isEnabled = false
+                    rateRb.isEnabled = false
+                    saveBt.isEnabled = false
+                }
             }
         }
 
@@ -61,6 +83,8 @@ class AddMovieFragment : Fragment() {
 
         famb.saveBt.setOnClickListener {
             setFragmentResult(MOVIE_FRAGMENT_REQUEST_KEY, Bundle().apply {
+                val watched = famb.watchedCb.isChecked
+                val rating = if (watched) { ratingValue } else { null }
                 putParcelable(
                     EXTRA_MOVIE, Movie(
                         receivedMovie?.name ?: famb.nameEt.text.toString(),
@@ -68,8 +92,8 @@ class AddMovieFragment : Fragment() {
                         famb.producerEt.text.toString(),
                         famb.durationEt.text.toString().toInt(),
                         famb.genreSp.selectedItem.toString(),
-                        famb.watchedCb.isChecked,
-                        ratingValue
+                        watched,
+                        rating
                     )
                 )
             })
@@ -78,13 +102,12 @@ class AddMovieFragment : Fragment() {
         return famb.root
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AddMovieFragment().apply {
-                arguments = Bundle().apply {
-
-                }
+    private fun getIndex(spinner: Spinner, myString: String): Int {
+        for (i in 0 until spinner.count) {
+            if (spinner.getItemAtPosition(i).toString().equals(myString, ignoreCase = true)) {
+                return i
             }
+        }
+        return 0
     }
 }

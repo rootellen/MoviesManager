@@ -3,16 +3,21 @@ package br.edu.ifsp.scl.moviesmanager.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import br.edu.ifsp.scl.moviesmanager.R
 import br.edu.ifsp.scl.moviesmanager.databinding.TileMovieBinding
 import br.edu.ifsp.scl.moviesmanager.model.entity.Movie
-import br.edu.ifsp.scl.moviesmanager.view.MovieRateDialogFragment
 
 class MovieAdapter(
-    private val movieList: List<Movie>,
+    private var movieList: List<Movie>,
     private val onMovieClickListener: OnMovieClickListener
-): RecyclerView.Adapter<MovieAdapter.MovieTileViewHolder>() {
+): RecyclerView.Adapter<MovieAdapter.MovieTileViewHolder>(), Filterable {
+
+    var movieListFilterable = ArrayList<Movie>()
     inner class MovieTileViewHolder(tileMovieBinding: TileMovieBinding) :
         RecyclerView.ViewHolder(tileMovieBinding.root) {
         val nameTv: TextView = tileMovieBinding.nameTv
@@ -21,6 +26,27 @@ class MovieAdapter(
         val watchedCb: CheckBox = tileMovieBinding.watchedCb
 
         init {
+            tileMovieBinding.apply {
+                root.run {
+                    setOnCreateContextMenuListener { menu, _, _ ->
+                        (onMovieClickListener as? Fragment)?.activity?.menuInflater?.inflate(
+                            R.menu.context_menu_movie,
+                            menu
+                        )
+                        menu?.findItem(R.id.removeMovieMi)?.setOnMenuItemClickListener {
+                            onMovieClickListener.onRemoveMovieMenuItemClick(adapterPosition)
+                            true
+                        }
+                        menu?.findItem(R.id.editMovieMi)?.setOnMenuItemClickListener {
+                            onMovieClickListener.onEditMovieMenuItemClick(adapterPosition)
+                            true
+                        }
+                    }
+                    setOnClickListener {
+                        onMovieClickListener.onMovieClick(adapterPosition)
+                    }
+                }
+            }
             watchedCb.run {
                 setOnClickListener {
                     onMovieClickListener.onWatchedCheckboxClicked(adapterPosition, isChecked)
@@ -44,5 +70,41 @@ class MovieAdapter(
                 watchedCb.isChecked = movie.watched
             }
         }
+    }
+
+    override fun getFilter(): Filter {
+        return object  : Filter() {
+            override fun performFiltering(p: CharSequence?): FilterResults {
+                if (p.toString().isEmpty()) {
+                    movieListFilterable = movieList as ArrayList<Movie>
+                }
+                else {
+                    val resultList = ArrayList<Movie>()
+                    for (row in movieList) {
+                        if (
+                            row.name.lowercase().contains(p.toString().lowercase()) ||
+                            row.rate.toString().contains(p.toString())
+                            ) {
+                            resultList.add(row)
+                        }
+                    }
+                    movieListFilterable = resultList
+                }
+                val filterResult = FilterResults()
+                filterResult.values = movieListFilterable
+                return filterResult
+            }
+
+            override fun publishResults(p0: CharSequence?, p1: FilterResults?) {
+                movieListFilterable = p1?.values as ArrayList<Movie>
+                notifyDataSetChanged()
+            }
+        }
+    }
+
+    fun updateList(list: List<Movie>) {
+        movieList = list as ArrayList<Movie>
+        movieListFilterable = movieList as ArrayList<Movie>
+        notifyDataSetChanged()
     }
 }
