@@ -33,8 +33,6 @@ class MovieRateDialogFragment(private val onMovieClickListener: OnMovieClickList
             onMovieClickListener.onRateButtonDialogClicked(ratingValue)
             dismiss()
         }
-
-
         return mrdfb.root
     }
 

@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.setFragmentResult
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import br.edu.ifsp.scl.moviesmanager.R
@@ -23,11 +24,10 @@ class MovieFragment : Fragment() {
     private lateinit var famb: FragmentAddMovieBinding
     private val navigationArgs: MovieFragmentArgs by navArgs()
     private var ratingValue = 0
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
 
-        }
+    // Nav Controller
+    private val navController: NavController by lazy {
+        findNavController()
     }
 
     @SuppressLint("SetTextI18n")
@@ -65,6 +65,12 @@ class MovieFragment : Fragment() {
                     saveBt.isEnabled = false
                 }
             }
+        }
+
+        famb.editGenreBt.setOnClickListener {
+            navController.navigate(
+                MovieFragmentDirections.actionAddMovieFragmentToGenreFragment()
+            )
         }
 
         famb.watchedCb.setOnCheckedChangeListener { _, isChecked ->
