@@ -1,4 +1,4 @@
-package br.edu.ifsp.scl.moviesmanager.view.adapter
+package br.edu.ifsp.scl.moviesmanager.view.movie.adapter
 
 interface OnMovieClickListener {
     fun onMovieClick(position: Int)

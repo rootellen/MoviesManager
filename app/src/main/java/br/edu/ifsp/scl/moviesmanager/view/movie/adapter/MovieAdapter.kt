@@ -1,4 +1,4 @@
-package br.edu.ifsp.scl.moviesmanager.view.adapter
+package br.edu.ifsp.scl.moviesmanager.view.movie.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -104,7 +104,7 @@ class MovieAdapter(
 
     fun updateList(list: List<Movie>) {
         movieList = list as ArrayList<Movie>
-        movieListFilterable = movieList as ArrayList<Movie>
+        movieListFilterable = movieList
         notifyDataSetChanged()
     }
 }

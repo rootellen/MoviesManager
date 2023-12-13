@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/moviesFragment"
-        android:name="br.edu.ifsp.scl.moviesmanager.view.MainFragment"
+        android:name="br.edu.ifsp.scl.moviesmanager.view.movie.MainFragment"
         android:label="fragment_movies"
         tools:layout="@layout/fragment_movies" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/addMovieFragment"
-        android:name="br.edu.ifsp.scl.moviesmanager.view.MovieFragment"
+        android:name="br.edu.ifsp.scl.moviesmanager.view.movie.MovieFragment"
         android:label="fragment_add_movie"
         tools:layout="@layout/fragment_add_movie" >
         <argument
@@ -28,5 +28,13 @@
             android:name="editMovie"
             app:argType="boolean"
             android:defaultValue="false" />
+        <action
+            android:id="@+id/action_addMovieFragment_to_genreFragment"
+            app:destination="@id/genreFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/genreFragment"
+        android:name="br.edu.ifsp.scl.moviesmanager.view.genre.GenreFragment"
+        android:label="fragment_genre"
+        tools:layout="@layout/fragment_genre" />
 </navigation>

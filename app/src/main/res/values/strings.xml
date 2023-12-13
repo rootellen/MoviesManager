@@ -17,6 +17,12 @@
     <string name="rate_this_movie">Rate this movie</string>
     <string name="cancel">Cancel</string>
     <string name="rate">Rate</string>
+    <string name="edit_genres">Edit Genres</string>
+    <string name="add_genre">Add Genre</string>
+    <string name="insert_a_new_genre">Insert a new genre</string>
+    <string name="genre1">Genre</string>
+    <string name="insert">Insert</string>
+    <string name="delete_genre">Delete Genre</string>
     <string-array name="genreArray">
         <item>Horror</item>
         <item>Romance</item>

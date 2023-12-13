@@ -1,4 +1,4 @@
-package br.edu.ifsp.scl.moviesmanager.view
+package br.edu.ifsp.scl.moviesmanager.view.movie
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -8,26 +8,36 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import br.edu.ifsp.scl.moviesmanager.R
 import br.edu.ifsp.scl.moviesmanager.databinding.FragmentAddMovieBinding
+import br.edu.ifsp.scl.moviesmanager.model.entity.Genre
 import br.edu.ifsp.scl.moviesmanager.model.entity.Movie
-import br.edu.ifsp.scl.moviesmanager.view.MainFragment.Companion.EXTRA_MOVIE
-import br.edu.ifsp.scl.moviesmanager.view.MainFragment.Companion.MOVIE_FRAGMENT_REQUEST_KEY
+import br.edu.ifsp.scl.moviesmanager.view.movie.MainFragment.Companion.EXTRA_MOVIE
+import br.edu.ifsp.scl.moviesmanager.view.movie.MainFragment.Companion.MOVIE_FRAGMENT_REQUEST_KEY
+import br.edu.ifsp.scl.moviesmanager.viewModel.GenresViewModel
 
 class MovieFragment : Fragment() {
     private lateinit var famb: FragmentAddMovieBinding
     private val navigationArgs: MovieFragmentArgs by navArgs()
     private var ratingValue = 0
+    private var genreList = ArrayList<String>()
 
     // Nav Controller
     private val navController: NavController by lazy {
         findNavController()
+    }
+
+    // Genres View Model
+    private val genreViewModel: GenresViewModel by viewModels {
+        GenresViewModel.genreViewModelFactory
     }
 
     @SuppressLint("SetTextI18n")
@@ -38,6 +48,15 @@ class MovieFragment : Fragment() {
         (activity as? AppCompatActivity)?.supportActionBar?.subtitle =
             getString(R.string.add_a_movie)
         famb = FragmentAddMovieBinding.inflate(inflater, container, false)
+        genreViewModel.genreMld.observe(viewLifecycleOwner) { genres ->
+            genreList.clear()
+            genres.forEach {
+                genreList.add(it.genre)
+            }
+            configSpinner()
+        }
+        genreViewModel.getGenres()
+        configSpinner()
 
         val receivedMovie = navigationArgs.movie
         receivedMovie?.also {
@@ -107,6 +126,11 @@ class MovieFragment : Fragment() {
             findNavController().navigateUp()
         }
         return famb.root
+    }
+
+    private fun configSpinner() {
+        val adapter = activity?.let { ArrayAdapter<String>(it, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, genreList) }
+        famb.genreSp.adapter = adapter
     }
 
     private fun getIndex(spinner: Spinner, myString: String): Int {

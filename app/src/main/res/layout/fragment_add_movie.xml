@@ -5,11 +5,10 @@
     android:layout_height="match_parent"
     android:layout_margin="16dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".view.MovieFragment">
+    tools:context=".view.movie.MovieFragment">
 
     <EditText
         android:id="@+id/nameEt"
-        android:padding="16dp"
         android:inputType="text"
         android:autofillHints="name"
         android:layout_width="match_parent"
@@ -21,7 +20,6 @@
 
     <EditText
         android:id="@+id/yearEt"
-        android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/year"
@@ -32,7 +30,6 @@
 
     <EditText
         android:id="@+id/producerEt"
-        android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/producer"
@@ -43,7 +40,6 @@
 
     <EditText
         android:id="@+id/durationEt"
-        android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/duration"
@@ -53,25 +49,42 @@
         app:layout_constraintTop_toBottomOf="@id/producerEt"
         android:autofillHints="" />
 
-    <Spinner
-        android:id="@+id/genreSp"
-        android:entries="@array/genreArray"
-        android:padding="16dp"
+
+    <LinearLayout
+        android:id="@+id/line"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/durationEt" />
+        android:layout_weight="1"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/durationEt">
+        <Spinner
+            android:id="@+id/genreSp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/durationEt" />
+        <ImageButton
+            android:id="@+id/editGenreBt"
+            android:layout_weight="5"
+            android:src="@drawable/ic_edit"
+            android:backgroundTint="@color/md_theme_dark_primaryContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tint="@color/md_theme_dark_onBackground"
+            android:contentDescription="@string/edit_genres" />
+    </LinearLayout>
 
     <CheckBox
         android:id="@+id/watchedCb"
-        android:layout_margin="16dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/watched"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/genreSp" />
+        app:layout_constraintTop_toBottomOf="@id/line" />
 
     <RatingBar
         android:id="@+id/rateRb"
@@ -98,7 +111,6 @@
 
     <Button
         android:id="@+id/saveBt"
-        android:layout_margin="16dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/save"

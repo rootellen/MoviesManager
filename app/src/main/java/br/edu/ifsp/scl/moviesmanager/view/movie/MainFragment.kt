@@ -1,4 +1,4 @@
-package br.edu.ifsp.scl.moviesmanager.view
+package br.edu.ifsp.scl.moviesmanager.view.movie
 
 import android.app.Activity
 import android.graphics.Color
@@ -25,8 +25,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import br.edu.ifsp.scl.moviesmanager.R
 import br.edu.ifsp.scl.moviesmanager.databinding.FragmentMoviesBinding
 import br.edu.ifsp.scl.moviesmanager.model.entity.Movie
-import br.edu.ifsp.scl.moviesmanager.view.adapter.MovieAdapter
-import br.edu.ifsp.scl.moviesmanager.view.adapter.OnMovieClickListener
+import br.edu.ifsp.scl.moviesmanager.view.movie.adapter.MovieAdapter
+import br.edu.ifsp.scl.moviesmanager.view.movie.adapter.OnMovieClickListener
 import br.edu.ifsp.scl.moviesmanager.viewModel.MoviesViewModel
 
 class MainFragment : Fragment(), OnMovieClickListener {
@@ -54,8 +54,21 @@ class MainFragment : Fragment(), OnMovieClickListener {
         const val MOVIE_FRAGMENT_REQUEST_KEY = "MOVIE_FRAGMENT_REQUEST_KEY"
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = "Movie List"
+        mfb = FragmentMoviesBinding.inflate(inflater, container, false).apply {
+            movieRv.layoutManager = LinearLayoutManager(context)
+            movieRv.adapter = movieAdapter
+
+            addMovieFab.setOnClickListener {
+                navController.navigate(
+                    MainFragmentDirections.actionMoviesFragmentToAddMovieFragment()
+                )
+            }
+        }
         setFragmentResultListener(MOVIE_FRAGMENT_REQUEST_KEY) { requestKey, bundle ->
             if (requestKey == MOVIE_FRAGMENT_REQUEST_KEY) {
                 val movie =
@@ -81,35 +94,21 @@ class MainFragment : Fragment(), OnMovieClickListener {
                 )
             }
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = "Movie List"
-        mfb = FragmentMoviesBinding.inflate(inflater, container, false).apply {
-            movieRv.layoutManager = LinearLayoutManager(context)
-            movieRv.adapter = movieAdapter
-
-            addMovieFab.setOnClickListener {
-                navController.navigate(
-                    MainFragmentDirections.actionMoviesFragmentToAddMovieFragment()
-                )
-            }
-        }
         viewModel.movieMld.observe(requireActivity()) { movies ->
             movies.let {
                 movieAdapter.updateList(movies)
             }
         }
-        viewModel.getMovies()
         return mfb.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getMovies()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val menuHost: MenuHost = requireActivity()
 
         menuHost.addMenuProvider(object : MenuProvider {

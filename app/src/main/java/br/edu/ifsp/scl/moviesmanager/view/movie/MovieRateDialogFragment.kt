@@ -1,4 +1,4 @@
-package br.edu.ifsp.scl.moviesmanager.view
+package br.edu.ifsp.scl.moviesmanager.view.movie
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import br.edu.ifsp.scl.moviesmanager.databinding.RateDialogBinding
-import br.edu.ifsp.scl.moviesmanager.view.adapter.OnMovieClickListener
+import br.edu.ifsp.scl.moviesmanager.view.movie.adapter.OnMovieClickListener
 
 class MovieRateDialogFragment(private val onMovieClickListener: OnMovieClickListener): DialogFragment() {
     private lateinit var mrdfb: RateDialogBinding
