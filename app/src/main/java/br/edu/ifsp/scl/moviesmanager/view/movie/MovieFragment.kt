@@ -62,7 +62,7 @@ class MovieFragment : Fragment() {
         configSpinner()
 
         receivedMovie = navigationArgs.movie
-        watchedMovie = receivedMovie!!.watched
+        watchedMovie = receivedMovie?.watched
         receivedMovie?.also {
             with(famb) {
                 nameEt.setText(receivedMovie?.name)
@@ -73,7 +73,7 @@ class MovieFragment : Fragment() {
                 genreSp.setSelection(adapterSp?.getPosition(receivedMovie?.genre) ?: 0)
                 watchedCb.isChecked = receivedMovie?.watched ?: false
                 rateRb.rating = receivedMovie?.rate?.toFloat()?.div(2) ?: 0f
-                rateBarTv.text = "${(receivedMovie?.rate)}/10"
+                rateBarTv.text = "${(receivedMovie?.rate ?: 0)}/10"
                 if (watchedCb.isChecked) {
                     rateRb.visibility = VISIBLE
                     rateBarTv.visibility = VISIBLE
