@@ -68,7 +68,7 @@ class MovieFragment : Fragment() {
                 durationEt.setText(receivedMovie.duration.toString())
                 genreSp.setSelection(getIndex(genreSp, receivedMovie.genre))
                 watchedCb.isChecked = receivedMovie.watched
-                rateRb.rating = receivedMovie.rate?.toFloat() ?: 0f
+                rateRb.rating = receivedMovie.rate?.toFloat()?.div(2) ?: 0f
                 rateBarTv.text = "${(receivedMovie.rate)}/10"
                 if (receivedMovie.watched) {
                     rateRb.visibility = VISIBLE

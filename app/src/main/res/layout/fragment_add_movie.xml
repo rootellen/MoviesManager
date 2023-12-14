@@ -90,6 +90,8 @@
         android:id="@+id/rateRb"
         android:visibility="gone"
         android:progressTint="@color/md_theme_light_primary"
+        android:backgroundTint="@color/cardview_dark_background"
+        android:secondaryProgressTint="@color/md_theme_dark_onPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:numStars="5"
