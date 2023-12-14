@@ -29,6 +29,9 @@ class MovieFragment : Fragment() {
     private val navigationArgs: MovieFragmentArgs by navArgs()
     private var ratingValue = 0
     private var genreList = ArrayList<String>()
+    private var adapterSp: ArrayAdapter<String>? = null
+    private var receivedMovie: Movie? = null
+    private var watchedMovie: Boolean? = null
 
     // Nav Controller
     private val navController: NavController by lazy {
@@ -58,19 +61,20 @@ class MovieFragment : Fragment() {
         genreViewModel.getGenres()
         configSpinner()
 
-        val receivedMovie = navigationArgs.movie
+        receivedMovie = navigationArgs.movie
+        watchedMovie = receivedMovie!!.watched
         receivedMovie?.also {
             with(famb) {
-                nameEt.setText(receivedMovie.name)
+                nameEt.setText(receivedMovie?.name)
                 nameEt.isEnabled = false
-                yearEt.setText(receivedMovie.year.toString())
-                producerEt.setText(receivedMovie.producer)
-                durationEt.setText(receivedMovie.duration.toString())
-                genreSp.setSelection(getIndex(genreSp, receivedMovie.genre))
-                watchedCb.isChecked = receivedMovie.watched
-                rateRb.rating = receivedMovie.rate?.toFloat()?.div(2) ?: 0f
-                rateBarTv.text = "${(receivedMovie.rate)}/10"
-                if (receivedMovie.watched) {
+                yearEt.setText(receivedMovie?.year.toString())
+                producerEt.setText(receivedMovie?.producer)
+                durationEt.setText(receivedMovie?.duration.toString())
+                genreSp.setSelection(adapterSp?.getPosition(receivedMovie?.genre) ?: 0)
+                watchedCb.isChecked = receivedMovie?.watched ?: false
+                rateRb.rating = receivedMovie?.rate?.toFloat()?.div(2) ?: 0f
+                rateBarTv.text = "${(receivedMovie?.rate)}/10"
+                if (watchedCb.isChecked) {
                     rateRb.visibility = VISIBLE
                     rateBarTv.visibility = VISIBLE
                 }
@@ -127,18 +131,9 @@ class MovieFragment : Fragment() {
         }
         return famb.root
     }
-
     private fun configSpinner() {
-        val adapter = activity?.let { ArrayAdapter<String>(it, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, genreList) }
-        famb.genreSp.adapter = adapter
-    }
-
-    private fun getIndex(spinner: Spinner, myString: String): Int {
-        for (i in 0 until spinner.count) {
-            if (spinner.getItemAtPosition(i).toString().equals(myString, ignoreCase = true)) {
-                return i
-            }
-        }
-        return 0
+        adapterSp = activity?.let { ArrayAdapter<String>(it, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, genreList) }
+        famb.genreSp.adapter = adapterSp
+        famb.genreSp.setSelection(adapterSp?.getPosition(receivedMovie?.genre) ?: 0)
     }
 }
